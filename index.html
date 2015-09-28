@@ -22,6 +22,7 @@
   <body>
 
     <div class="controls">
+      <button onclick="goToMyPosition();">My Position</button>
       <button onclick="goToUser();">Go to User</button>
     </div>
     <div id="map"></div>
@@ -31,7 +32,7 @@
 
         function goToUser() {
 
-          var user = {'lat': 10.48051147528519, 'lng': -66.90399169921875, 'name': 'New User'};
+          var user = {'lat': -30.02845460245115, 'lng': -51.22856140136719, 'name': 'New User'};
           map.panTo({lat: user.lat, lng: user.lng});
           addMarker(user.lat, user.lng, user.name);
         }
@@ -101,17 +102,16 @@
                     pos = {
                       lat: position.H,
                       lng: position.L
-                    },
-            clickedPos;
+                    };
 
             // Create a new marker where user clicks the map
             addMarker(pos.lat, pos.lng, 'Name');
 
-            clickedPos = new google.maps.LatLng(pos.lat, pos.lng);
+            var clickedPos = new google.maps.LatLng(pos.lat, pos.lng);
             compareDistance(clickedPos, function (distance) {
               console.log("Distance: " + distance + " km\n"
-                      + "Latitude: " + pos.lat + "\n"
-                      + "Longitude: " + pos.lng + "\n"
+                      + "Position Latitude: " + pos.lat + "\n"
+                      + "Position Longitude: " + pos.lng + "\n"
                       );
             });
           }
@@ -154,6 +154,18 @@
             handleLocationError(false, infoWindow, map.getCenter());
           }
 
+        }
+
+        function goToMyPosition() {
+
+          navigator.geolocation.getCurrentPosition(function (position) {
+
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            map.panTo({lat: pos.lat, lng: pos.lng});
+          });
         }
 
         /**
