@@ -39,20 +39,50 @@
 
         function loadMap() {
 
+          var mapSettings = {
+            // center: {lat: -34.397, lng: 150.644},
+            // Disable default street view controls
+            streetViewControl: false,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            // Disable default map controls such as zoom +/- buttons
+            disableDefaultUI: true,
+            zoom: 15,
+            minZoom: 5
+          },
+          styles = [{
+              stylers: [
+                {saturation: -90}
+              ]}, {
+              featureType: "transit",
+              elementType: "all",
+              stylers: [{
+                  lightness: 100
+                }, {
+                  visibility: "off"
+                }
+              ]
+            }, {
+              featureType: "poi",
+              elementType: "all",
+              stylers: [{
+                  lightness: 100
+                }, {
+                  visibility: "off"
+                }
+              ]
+            }];
+
           mapEvent = google.maps.event,
                   spherical = google.maps.geometry.spherical,
                   path = [],
                   mapContainer = document.getElementById('map'),
+                  // Set map styles
+                  styledMap = new google.maps.StyledMapType(styles, {name: "Styled Map"}),
                   // Create a global map object
-                  map = new google.maps.Map(mapContainer, {
-                    // center: {lat: -34.397, lng: 150.644},
-                    // Disable default street view controls
-                    streetViewControl: false,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    // Disable default map controls such as zoom +/- buttons
-                    disableDefaultUI: true,
-                    zoom: 15
-                  });
+                  map = new google.maps.Map(mapContainer, mapSettings),
+                  map.mapTypes.set('map_style', styledMap),
+                  map.setMapTypeId('map_style');
+
 
           // Event fires on map dragging
           mapEvent.addListener(map, 'drag', function () {
@@ -69,6 +99,10 @@
                       );
             }, 1000);
 
+          });
+
+          mapEvent.addListener(map, 'zoom_changed', function () {
+            console.log('Zoom level: ' + map.getZoom());
           });
 
           var users = [
@@ -165,6 +199,7 @@
               lng: position.coords.longitude
             };
             map.panTo({lat: pos.lat, lng: pos.lng});
+            map.setZoom(20);
           });
         }
 
